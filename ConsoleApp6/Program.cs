@@ -191,3 +191,47 @@ class Program
         products.Add(product);
         Console.WriteLine("Продукт добавлен!");
     }
+    static void DeleteProduct()
+    {
+        Console.Write("Введите код товара для удаления: ");
+        string code = Console.ReadLine();
+
+        Product found = FindByCode(code);
+        if (found == null)
+        {
+            Console.WriteLine("Товар не найден!");
+            return;
+        }
+
+        products.Remove(found);
+        Console.WriteLine("Товар удалён!");
+    }
+
+ 
+    static void SupplyProduct()
+    {
+        Console.Write("Введите код товара: ");
+        string code = Console.ReadLine();
+
+        Product found = FindByCode(code);
+        if (found == null)
+        {
+            Console.WriteLine("Товар не найден!");
+            return;
+        }
+
+        int amount = -1;
+        while (amount <= 0)
+        {
+            Console.Write("Введите количество для поставки: ");
+            string input4 = Console.ReadLine();
+            if (!int.TryParse(input4, out amount) || amount <= 0)
+            {
+                Console.WriteLine("Введите положительное целое число!");
+                amount = -1;
+            }
+        }
+        found.Quantity = found.Quantity + amount;
+        Console.WriteLine("Поставка добавлена! Новое количество: " + found.Quantity);
+    }
+
