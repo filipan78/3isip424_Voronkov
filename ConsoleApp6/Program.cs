@@ -72,14 +72,38 @@ class Program
 
             string choice = Console.ReadLine();
 
-            if (choice == "1") AddProduct();
-            else if (choice == "2") DeleteProduct();
-            else if (choice == "3") SupplyProduct();
-            else if (choice == "4") SellProduct();
-            else if (choice == "5") SearchProduct();
-            else if (choice == "6") ShowAll();
-            else if (choice == "0") work = false;
-            else Console.WriteLine("Неверный пункт меню!");
+            if (choice == "1")
+            {
+                AddProduct();
+            }
+            else if (choice == "2")
+            {
+                DeleteProduct();
+            }
+            else if (choice == "3")
+            {
+                SupplyProduct();
+            }
+            else if (choice == "4")
+            {
+                SellProduct();
+            }
+            else if (choice == "5")
+            {
+                SearchProduct();
+            }
+            else if (choice == "6")
+            {
+                ShowAll();
+            }
+            else if (choice == "0")
+            {
+                work = false;
+            }
+            else
+            {
+                Console.WriteLine("Неверный пункт меню!");
+            }
         }
     }
     static void AddTestProduct(string name, decimal price, int quantity, Category category)
