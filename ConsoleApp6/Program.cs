@@ -235,3 +235,43 @@ class Program
         Console.WriteLine("Поставка добавлена! Новое количество: " + found.Quantity);
     }
 
+    static void SellProduct()
+    {
+        Console.Write("Введите код товара: ");
+        string code = Console.ReadLine();
+
+        Product found = FindByCode(code);
+        if (found == null)
+        {
+            Console.WriteLine("Товар не найден!");
+            return;
+        }
+
+        if (!found.InStock())
+        {
+            Console.WriteLine("Товара нет на складе!");
+            return;
+        }
+        int amount = -1;
+        while (amount <= 0)
+        {
+            Console.Write("Введите количество для продажи: ");
+            string input = Console.ReadLine();
+            if (!int.TryParse(input, out amount) || amount <= 0)
+            {
+                Console.WriteLine("Введите положительное целое число");
+                amount = -1;
+            }
+        }
+
+        if (amount > found.Quantity)
+        {
+            Console.WriteLine("Недостаточно товара на складе, есть только: " + found.Quantity);
+            return;
+        }
+
+        found.Quantity = found.Quantity - amount;
+        Console.WriteLine("Продано, остаток: " + found.Quantity);
+    }
+
+
