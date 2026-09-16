@@ -274,4 +274,104 @@ class Program
         Console.WriteLine("Продано, остаток: " + found.Quantity);
     }
 
+    static void SearchProduct()
+    {
+        Console.WriteLine("Искать по: 1 - коду, 2 - названию, 3 - категории");
+        string choice = Console.ReadLine();
 
+        bool foundAny = false;
+
+        if (choice == "1")
+        {
+            Console.Write("Введите код: ");
+            string code = Console.ReadLine();
+            Product found = FindByCode(code);
+            if (found != null)
+            {
+                found.Print();
+                foundAny = true;
+            }
+        }
+        else if (choice == "2")
+        {
+            Console.Write("Введите название: ");
+            string name = Console.ReadLine();
+            for (int i = 0; i < products.Count; i++)
+            {
+                if (products[i].Name.ToLower().Contains(name.ToLower()))
+                {
+                    products[i].Print();
+                    Console.WriteLine("------------------");
+                    foundAny = true;
+                }
+            }
+        }
+        else if (choice == "3")
+        {
+            
+            Console.WriteLine("Введите номер категории: ");
+            Console.WriteLine("1. Электроника");
+            Console.WriteLine("2. Продукты");
+            Console.WriteLine("3. Одежда");
+            string catInput = Console.ReadLine();
+            Category category = Category.Electronics;
+            if (catInput == "1")
+            {
+                category = Category.Electronics;
+            }
+            else if (catInput == "2")
+            {
+                category = Category.Groceries;
+            }
+            else if (catInput == "3")
+            {
+                category = Category.Clothing;
+            }
+            for (int i = 0; i < products.Count; i++)
+            {
+                if (products[i].Category == category)
+                {
+                    products[i].Print();
+                    Console.WriteLine("------------------");
+                    foundAny = true;
+                }
+            }
+        }
+        else
+        {
+            Console.WriteLine("Неверный выбор!");
+            return;
+        }
+
+        if (!foundAny)
+        {
+            Console.WriteLine("Товары не найдены.");
+        }
+    }
+    static void ShowAll()
+    {
+        if (products.Count == 0)
+        {
+            Console.WriteLine("Список товаров пуст.");
+            return;
+        }
+
+        for (int i = 0; i < products.Count; i++)
+        {
+            products[i].Print();
+            Console.WriteLine("------------------");
+        }
+    }
+
+    static Product FindByCode(string code)
+    {
+        for (int i = 0; i < products.Count; i++)
+        {
+            if (products[i].Code == code)
+            {
+                return products[i];
+            }
+        }
+        return null;
+    }
+}
