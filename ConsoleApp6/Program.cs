@@ -45,7 +45,7 @@ class Program
         }
     }
 
-    static List <Product>products = new List<Product>();
+    static List<Product> products = new List<Product>();
     static int nextCode = 1;
 
     static void Main()
@@ -116,4 +116,78 @@ class Program
         p.Quantity = quantity;
         p.Category = category;
         products.Add(p);
+    }
+    static void AddProduct()
+    {
+        Console.WriteLine("Введите название товара: ");
+        string name = Console.ReadLine();
+        while (string.IsNullOrEmpty(name))
+        {
+            Console.WriteLine("Название не может быть пустым, введите еще раз: ");
+            name = Console.ReadLine();
+        }
+        decimal price = -1;
+        while (price < 0)
+        {
+            Console.WriteLine("Введите количество товаров: ");
+            string input2 = Console.ReadLine();
+            if (!decimal.TryParse(input2, out price) || price < 0)
+            {
+                Console.WriteLine("Неверный ввод, попробуйте еще раз: ");
+                input2 = Console.ReadLine();
+                price = -1;
+            }
+        }
+        int quantity = -1;
+        while (quantity < 0)
+        {
+            Console.WriteLine("Введите количество товаров: ");
+            string input = Console.ReadLine();
+            if (!int.TryParse(input, out quantity) || quantity < 0)
+            {
+                Console.WriteLine("Неверный ввод, попробуйте еще раз: ");
+                input = Console.ReadLine();
+                quantity = -1;
+            }
+        }
+
+        Console.WriteLine("Выберете категорию:");
+        Console.WriteLine("1. Электроника");
+        Console.WriteLine("2. Продукты");
+        Console.WriteLine("3. Одежда");
+        bool categoryOK = false;
+        Category category = Category.Groceries;
+        while (!categoryOK)
+        {
+            string input3 = Console.ReadLine();
+            if (input3 == "1")
+            {
+                category = Category.Electronics;
+                categoryOK = true;
+            }
+            else if (input3 == "2")
+            {
+                category = Category.Groceries;
+                categoryOK = true;
+            }
+            else if (input3 == "3")
+            {
+                category = Category.Clothing;
+                categoryOK = true;
+            }
+            else
+            {
+                Console.WriteLine("Неверный ввод, попробуйте еще раз: ");
+            }
+        }
+        Product product = new Product();
+        product.Code = "1" + nextCode;
+        nextCode++;
+        product.Name = name;
+        product.Price = price;
+        product.Quantity = quantity;
+        product.Category = category;
+
+        products.Add(product);
+        Console.WriteLine("Продукт добавлен!");
     }
