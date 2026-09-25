@@ -56,7 +56,7 @@ namespace ConsoleApp6
                         longest = words[i];
                     }
                 }
-                int sentenceCoint = 0;
+                int sentenceCount = 0;
 
                 for (int i = 0; i < wordCount; i++)
                 {
@@ -64,7 +64,7 @@ namespace ConsoleApp6
 
                     if (c == '!' || c == '?' || c == '.')
                     {
-                        sentenceCoint++;
+                        sentenceCount++;
                     }
                 }
                 char[] vowels = { 'а', 'е', 'ё', 'и', 'о', 'у', 'ы', 'э', 'ю', 'я' };
@@ -89,21 +89,59 @@ namespace ConsoleApp6
                                 isVowel = true;
                             }
                         }
-                            if (isVowel)
+                        if (isVowel)
+                        {
+                            vowelsCount++;
+                        }
+                        else
+                        {
+                            consonantCount++;
+                        }
+
+                        int foundIndex = -1;
+
+                        for (int k = 0; k < letters.Count; k++)
+                        {
+                            if (letters[k] == c)
                             {
-                                vowelsCount++;
+                                foundIndex = k;
                             }
-                            else
-                            {
-                                consonantCount++;
-                            }
+                        }
 
-                        
-
-
-
-
+                        if (foundIndex == -1)
+                        {
+                            letters.Add(c);
+                            counts.Add(1);
+                        }
+                        else
+                        {
+                            counts[foundIndex]++;
+                        }
+                    }
                 }
+                Console.WriteLine("Частота букв:");
+                for (int i = 0; i < letters.Count; i++)
+                {
+                    Console.WriteLine(letters[i] + " - " + counts[i]);
+                }
+                Console.WriteLine("Количество слов: " + wordCount);
+                Console.WriteLine("Самое короткое слово: " + shortest);
+                Console.WriteLine("Самое длинное слово: " + longest);
+                Console.WriteLine("Количество предложений: " + sentenceCount);
+                Console.WriteLine("Гласных букв: " + vowelCount);
+                Console.WriteLine("Согласных букв: " + consonantCount);
+                historyWordCount.Add(wordCount);
+                historyShortest.Add(shortest);
+                historyLongest.Add(longest);
+                historySentenceCount.Add(sentenceCount);
+                historyVowelCount.Add(vowelCount);
+                historyConsonantCount.Add(consonantCount);
+
+
+
+
+
+            }
 
         }
     }
