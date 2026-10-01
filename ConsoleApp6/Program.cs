@@ -4,29 +4,28 @@ using System.Net.Http.Headers;
 
 class Program
 {
-    enum Category
+    enum Genre
     {
-        Electronics,
-        Groceries,
-        Clothing
+        Fiction,          
+        MysteryThriller,  
+        FantasySciFi,    
+        Biography,        
+        History,          
+        SelfHelp
     }
 
     class Product
     {
-        public string Code;
+        public int ID;
         public string Name;
-        public decimal Price;
-        public int Quantity;
-        public Category Category;
-
-        public bool InStock()
-        {
-            return Quantity > 0;
-        }
+        public decimal Author;
+        public Genre Genre;
+        public int Izdanie;
+        public double Price;
 
         public void Print()
         {
-            Console.WriteLine("Код: " + Code);
+            Console.WriteLine("Код: " + ID);
             Console.WriteLine("Название: " + Name);
             Console.WriteLine("Цена: " + Price);
             Console.WriteLine("Количество: " + Quantity);
