@@ -105,7 +105,7 @@ using System.Xml.Linq;
     }
     static void AddBook()
     {
-        Console.WriteLine("Введите название товара: ");
+        Console.WriteLine("Введите название книги: ");
         string name = Console.ReadLine();
         while (string.IsNullOrEmpty(name))
         {
@@ -115,7 +115,7 @@ using System.Xml.Linq;
         decimal price = -1;
         while (price < 0)
         {
-            Console.WriteLine("Введите количество товаров: ");
+            Console.WriteLine("Введите цену: ");
             string input2 = Console.ReadLine();
             if (!decimal.TryParse(input2, out price) || price < 0)
             {
@@ -137,35 +137,52 @@ using System.Xml.Linq;
             }
         }
 
-        Console.WriteLine("Выберете категорию:");
-        Console.WriteLine("1. Электроника");
-        Console.WriteLine("2. Продукты");
-        Console.WriteLine("3. Одежда");
+        Console.WriteLine("Выберите категорию:");
+        Console.WriteLine("1. Fiction");
+        Console.WriteLine("2. Mystery & Thriller");
+        Console.WriteLine("3. Fantasy & Sci-Fi");
+        Console.WriteLine("4. Biography");
+        Console.WriteLine("5. History");
+        Console.WriteLine("6. Self-Help");
+
         bool categoryOK = false;
-        Genre genre = Genre.Author;
+
         while (!categoryOK)
         {
             string input3 = Console.ReadLine();
-            if (input3 == "1")
+
+            switch (input3)
             {
-                category = Category.Electronics;
-                categoryOK = true;
-            }
-            else if (input3 == "2")
-            {
-                category = Category.Groceries;
-                categoryOK = true;
-            }
-            else if (input3 == "3")
-            {
-                category = Category.Clothing;
-                categoryOK = true;
-            }
-            else
-            {
-                Console.WriteLine("Неверный ввод, попробуйте еще раз: ");
+                case "1":
+                    genre = Genre.Fiction;
+                    categoryOK = true;
+                    break;
+                case "2":
+                    category = Genre.MysteryThriller;
+                    categoryOK = true;
+                    break;
+                case "3":
+                    category = Genre.FantasySciFi;
+                    categoryOK = true;
+                    break;
+                case "4":
+                    category = Genre.Biography;
+                    categoryOK = true;
+                    break;
+                case "5":
+                    category = Genre.History;
+                    categoryOK = true;
+                    break;
+                case "6":
+                    category = Genre.SelfHelp;
+                    categoryOK = true;
+                    break;
+                default:
+                    Console.WriteLine("Неверный ввод, попробуйте еще раз: ");
+                    break;
             }
         }
+    }
         Product product = new Product();
         product.Code = "1" + nextID;
         nextID++;
