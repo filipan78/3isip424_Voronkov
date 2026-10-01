@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http.Headers;
+using System.Xml.Linq;
 
-class Program
-{
+
     enum Genre
     {
         Fiction,          
@@ -18,105 +19,91 @@ class Program
     {
         public int ID;
         public string Name;
-        public decimal Author;
+        public string Author;
         public Genre Genre;
-        public int Izdanie;
+        public string Izdanie;
         public double Price;
 
-        public void Print()
-        {
-            Console.WriteLine("Код: " + ID);
-            Console.WriteLine("Название: " + Name);
-            Console.WriteLine("Цена: " + Price);
-            Console.WriteLine("Количество: " + Quantity);
-
-            string status;
-            if (InStock())
-            {
-                status = "Да";
-            }
-            else
-            {
-                status = "Нет";
-            }
-            Console.WriteLine("В наличии: " + status);
-            Console.WriteLine("Категория: " + Category);
-        }
+        
     }
-
-    static List<Product> products = new List<Product>();
-    static int nextCode = 1;
+    class Program
+    {
+        static List<Product> products = new List<Product>();
+        static int nextID = 1;
 
     static void Main()
     {
-        AddTestProduct("Ноутбук", 50000, 5, Category.Electronics);
-        AddTestProduct("Хлеб", 45, 20, Category.Groceries);
-        AddTestProduct("Футболка", 900, 10, Category.Clothing);
-        AddTestProduct("Пылесос", 12000, 0, Category.Electronics);
-        AddTestProduct("Молоко", 80, 15, Category.Groceries);
+        AddTestProduct("Мастер и Маргарита", "Михаил Булгаков", Genre.Fiction, "Эксмо", 650.00);
+        AddTestProduct("Шерлок Холмс", "Артур Конан Дойл", Genre.MysteryThriller, "АСТ", 850.50);
+        AddTestProduct("Властелин Колец", "Дж. Р. Р. Толкин", Genre.FantasySciFi, "Азбука", 1200.00);
+        AddTestProduct("Стив Джобс", "Уолтер Айзексон", Genre.Biography, "Corpus", 1500.00);
+        AddTestProduct("Sapiens. Краткая история человечества", "Юваль Ной Харари", Genre.History, "Синдбад", 1100.00);
+
 
         bool work = true;
         while (work)
         {
             Console.WriteLine();
-            Console.WriteLine("Меню");
-            Console.WriteLine("1. Добавить товар");
-            Console.WriteLine("2. Удалить товар");
-            Console.WriteLine("3. Заказать поставку");
-            Console.WriteLine("4. Продать товар");
-            Console.WriteLine("5. Поиск товара");
-            Console.WriteLine("6. Показать все товары");
+            Console.WriteLine("Меню управления библиотекой");
+            Console.WriteLine("1. Добавить книгу");
+            Console.WriteLine("2. Удалить книгу");
+            Console.WriteLine("3. Поиск книг (по названию, автору, жанру)");
+            Console.WriteLine("4. Сортировка книг (по названию или году)");
+            Console.WriteLine("5. Показать самую дорогую и дешёвую книгу");
+            Console.WriteLine("6. Сгруппировать по авторам и вывести количество");
+            Console.WriteLine("7. Показать все книги");
             Console.WriteLine("0. Выход");
             Console.Write("Выберите пункт: ");
 
             string choice = Console.ReadLine();
+            Console.WriteLine();
 
-            if (choice == "1")
+            switch (choice)
             {
-                AddProduct();
+                case "1":
+                    AddBook();
+                    break;
+                case "2":
+                    DeleteBook();
+                    break;
+                case "3":
+                    SearchBook();
+                    break;
+                case "4":
+                    SortBooks();
+                    break;
+                case "5":
+                    ShowPriceExtremes();
+                    break;
+                case "6":
+                    GroupByAuthors();
+                    break;
+                case "7":
+                    ShowAllBooks();
+                    break;
+                case "0":
+                    work = false;
+                    break;
+                default:
+                    Console.WriteLine("Неверный пункт меню!");
+                    break;
             }
-            else if (choice == "2")
-            {
-                DeleteProduct();
-            }
-            else if (choice == "3")
-            {
-                SupplyProduct();
-            }
-            else if (choice == "4")
-            {
-                SellProduct();
-            }
-            else if (choice == "5")
-            {
-                SearchProduct();
-            }
-            else if (choice == "6")
-            {
-                ShowAll();
-            }
-            else if (choice == "0")
-            {
-                work = false;
-            }
-            else
-            {
-                Console.WriteLine("Неверный пункт меню!");
-            }
+
         }
     }
-    static void AddTestProduct(string name, decimal price, int quantity, Category category)
+    static void AddTestProduct(string name, string author, Genre genre, string izdanie, double price)
     {
-        Product p = new Product();
-        p.Code = "1" + nextCode;
-        nextCode++;
-        p.Name = name;
-        p.Price = price;
-        p.Quantity = quantity;
-        p.Category = category;
+        Product book = new Product();
+        book.ID = "1" + nextID;
+        nextID++;
+        book.Name = name;
+        book.Author = author;
+        book.Genre = genre;
+        book.Price = price;
+        book.Izdanie = izdanie;
         products.Add(p);
     }
-    static void AddProduct()
+    static void AddBook()
     {
         Console.WriteLine("Введите название товара: ");
         string name = Console.ReadLine();
@@ -155,7 +142,7 @@ class Program
         Console.WriteLine("2. Продукты");
         Console.WriteLine("3. Одежда");
         bool categoryOK = false;
-        Category category = Category.Groceries;
+        Genre genre = Genre.Author;
         while (!categoryOK)
         {
             string input3 = Console.ReadLine();
@@ -180,8 +167,8 @@ class Program
             }
         }
         Product product = new Product();
-        product.Code = "1" + nextCode;
-        nextCode++;
+        product.Code = "1" + nextID;
+        nextID++;
         product.Name = name;
         product.Price = price;
         product.Quantity = quantity;
@@ -190,7 +177,7 @@ class Program
         products.Add(product);
         Console.WriteLine("Продукт добавлен!");
     }
-    static void DeleteProduct()
+    static void DeleteBook();
     {
         Console.Write("Введите код товара для удаления: ");
         string code = Console.ReadLine();
@@ -373,4 +360,14 @@ class Program
         }
         return null;
     }
+}
+public void Print()
+{
+    Console.WriteLine("Код: " + ID);
+    Console.WriteLine("Название: " + Name);
+    Console.WriteLine("Автор: " + Author);
+    Console.WriteLine("Жанр: " + Genre);
+    Console.WriteLine("Цена: " + Price);
+
+
 }
