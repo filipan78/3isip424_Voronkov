@@ -94,7 +94,7 @@ using System.Xml.Linq;
     static void AddTestProduct(string name, string author, Genre genre, string izdanie, double price)
     {
         Product book = new Product();
-        book.ID = "1" + nextID;
+        book.ID = 1 + nextID;
         nextID++;
         book.Name = name;
         book.Author = author;
@@ -112,6 +112,67 @@ using System.Xml.Linq;
             Console.WriteLine("Название не может быть пустым, введите еще раз: ");
             name = Console.ReadLine();
         }
+        Console.WriteLine("Введите название автора: ");
+        string author = Console.ReadLine();
+        while (string.IsNullOrEmpty(name))
+        {
+            Console.WriteLine("Автор не может быть пустым, введите еще раз: ");
+            name = Console.ReadLine();
+        }
+
+
+        Console.WriteLine("Выберите категорию:");
+        Console.WriteLine("1. Fiction");
+        Console.WriteLine("2. Mystery & Thriller");
+        Console.WriteLine("3. Fantasy & Sci-Fi");
+        Console.WriteLine("4. Biography");
+        Console.WriteLine("5. History");
+        Console.WriteLine("6. Self-Help");
+
+        bool genreOK = false;
+        Genre  genre;
+        while (!genreOK)
+        {
+            string input3 = Console.ReadLine();
+
+            switch (input3)
+            {
+                case "1":
+                    genre = Genre.Fiction;
+                    genreOK = true;
+                    break;
+                case "2":
+                    genre = Genre.MysteryThriller;
+                    genreOK = true;
+                    break;
+                case "3":
+                    genre = Genre.FantasySciFi;
+                    genreOK = true;
+                    break;
+                case "4":
+                    genre = Genre.Biography;
+                    genreOK = true;
+                    break;
+                case "5":
+                    genre = Genre.History;
+                    genreOK = true;
+                    break;
+                case "6":
+                    genre = Genre.SelfHelp;
+                    genreOK = true;
+                    break;
+                default:
+                    Console.WriteLine("Неверный ввод, попробуйте еще раз: ");
+                    break;
+            }
+        }
+        Console.WriteLine("Введите издание книги: ");
+        string izdanie = Console.ReadLine();
+        while (string.IsNullOrEmpty(name))
+        {
+            Console.WriteLine("Название не может быть пустым, введите еще раз: ");
+            izdanie = Console.ReadLine();
+        }
         decimal price = -1;
         while (price < 0)
         {
@@ -124,102 +185,41 @@ using System.Xml.Linq;
                 price = -1;
             }
         }
-        int quantity = -1;
-        while (quantity < 0)
-        {
-            Console.WriteLine("Введите количество товаров: ");
-            string input = Console.ReadLine();
-            if (!int.TryParse(input, out quantity) || quantity < 0)
-            {
-                Console.WriteLine("Неверный ввод, попробуйте еще раз: ");
-                input = Console.ReadLine();
-                quantity = -1;
-            }
-        }
-
-        Console.WriteLine("Выберите категорию:");
-        Console.WriteLine("1. Fiction");
-        Console.WriteLine("2. Mystery & Thriller");
-        Console.WriteLine("3. Fantasy & Sci-Fi");
-        Console.WriteLine("4. Biography");
-        Console.WriteLine("5. History");
-        Console.WriteLine("6. Self-Help");
-
-        bool categoryOK = false;
-
-        while (!categoryOK)
-        {
-            string input3 = Console.ReadLine();
-
-            switch (input3)
-            {
-                case "1":
-                    genre = Genre.Fiction;
-                    categoryOK = true;
-                    break;
-                case "2":
-                    category = Genre.MysteryThriller;
-                    categoryOK = true;
-                    break;
-                case "3":
-                    category = Genre.FantasySciFi;
-                    categoryOK = true;
-                    break;
-                case "4":
-                    category = Genre.Biography;
-                    categoryOK = true;
-                    break;
-                case "5":
-                    category = Genre.History;
-                    categoryOK = true;
-                    break;
-                case "6":
-                    category = Genre.SelfHelp;
-                    categoryOK = true;
-                    break;
-                default:
-                    Console.WriteLine("Неверный ввод, попробуйте еще раз: ");
-                    break;
-            }
-        }
-    }
-        Product product = new Product();
-        product.Code = "1" + nextID;
-        nextID++;
-        product.Name = name;
-        product.Price = price;
-        product.Quantity = quantity;
-        product.Category = category;
-
-        products.Add(product);
-        Console.WriteLine("Продукт добавлен!");
+    Product product = new Product();
+    product.ID = 1 + nextID; 
+    nextID++;
+    product.Name = name;
+    product.Author = author;
+    product.Genre = genre;
+    product.Izdanie = izdanie;
+    product.Price = price;
     }
     static void DeleteBook();
     {
-        Console.Write("Введите код товара для удаления: ");
+        Console.Write("Введите код книги для удаления: ");
         string code = Console.ReadLine();
 
         Product found = FindByCode(code);
         if (found == null)
         {
-            Console.WriteLine("Товар не найден!");
+            Console.WriteLine("книга не найден!");
             return;
         }
 
         products.Remove(found);
-        Console.WriteLine("Товар удалён!");
+        Console.WriteLine("книга удалён!");
     }
 
  
     static void SupplyProduct()
     {
-        Console.Write("Введите код товара: ");
+        Console.Write("Введите код книги: ");
         string code = Console.ReadLine();
 
         Product found = FindByCode(code);
         if (found == null)
         {
-            Console.WriteLine("Товар не найден!");
+            Console.WriteLine("Книга не найдена!");
             return;
         }
 
@@ -240,19 +240,19 @@ using System.Xml.Linq;
 
     static void SellProduct()
     {
-        Console.Write("Введите код товара: ");
+        Console.Write("Введите код книги: ");
         string code = Console.ReadLine();
 
         Product found = FindByCode(code);
         if (found == null)
         {
-            Console.WriteLine("Товар не найден!");
+            Console.WriteLine("книга не найден!");
             return;
         }
 
         if (!found.InStock())
         {
-            Console.WriteLine("Товара нет на складе!");
+            Console.WriteLine("книги нет на складе!");
             return;
         }
         int amount = -1;
@@ -269,7 +269,7 @@ using System.Xml.Linq;
 
         if (amount > found.Quantity)
         {
-            Console.WriteLine("Недостаточно товара на складе, есть только: " + found.Quantity);
+            Console.WriteLine("Недостаточно книги на складе, есть только: " + found.Quantity);
             return;
         }
 
@@ -317,22 +317,22 @@ using System.Xml.Linq;
             Console.WriteLine("2. Продукты");
             Console.WriteLine("3. Одежда");
             string catInput = Console.ReadLine();
-            Category category = Category.Electronics;
+            genre genre = genre.Electronics;
             if (catInput == "1")
             {
-                category = Category.Electronics;
+                genre = genre.Electronics;
             }
             else if (catInput == "2")
             {
-                category = Category.Groceries;
+                genre = genre.Groceries;
             }
             else if (catInput == "3")
             {
-                category = Category.Clothing;
+                genre = genre.Clothing;
             }
             for (int i = 0; i < products.Count; i++)
             {
-                if (products[i].Category == category)
+                if (products[i].genre == genre)
                 {
                     products[i].Print();
                     Console.WriteLine("------------------");
@@ -348,14 +348,14 @@ using System.Xml.Linq;
 
         if (!foundAny)
         {
-            Console.WriteLine("Товары не найдены.");
+            Console.WriteLine("книгаы не найдены.");
         }
     }
     static void ShowAll()
     {
         if (products.Count == 0)
         {
-            Console.WriteLine("Список товаров пуст.");
+            Console.WriteLine("Список книгаов пуст.");
             return;
         }
 
