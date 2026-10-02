@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Xml.Linq;
 
@@ -15,7 +16,7 @@ using System.Xml.Linq;
         SelfHelp
     }
 
-    class Product
+    class Book
     {
         public int ID;
         public string Name;
@@ -26,13 +27,15 @@ using System.Xml.Linq;
 
         
     }
-    class Program
+partial class Program
     {
-        static List<Product> products = new List<Product>();
-        static int nextID = 1;
 
+    public static List<Book> books = new List<Book>();
+    public static int nextID = 1;
+    public static int genresCount = Enum.GetValues(typeof(Genre)).Length;
     static void Main()
     {
+
         AddTestProduct("Мастер и Маргарита", "Михаил Булгаков", Genre.Fiction, "Эксмо", 650.00);
         AddTestProduct("Шерлок Холмс", "Артур Конан Дойл", Genre.MysteryThriller, "АСТ", 850.50);
         AddTestProduct("Властелин Колец", "Дж. Р. Р. Толкин", Genre.FantasySciFi, "Азбука", 1200.00);
@@ -93,7 +96,7 @@ using System.Xml.Linq;
     }
     static void AddTestProduct(string name, string author, Genre genre, string izdanie, double price)
     {
-        Product book = new Product();
+        Book book = new Book();
         book.ID = 1 + nextID;
         nextID++;
         book.Name = name;
@@ -101,7 +104,25 @@ using System.Xml.Linq;
         book.Genre = genre;
         book.Price = price;
         book.Izdanie = izdanie;
-        products.Add(p);
+        books.Add(book);
+    }
+
+    static void PrintBooks(List<Book> list) {
+        if (list.Count == 0)
+        {
+            Console.WriteLine("Книг нет");
+            return;
+        }
+    foreach (Book book in list) {
+            Console.WriteLine("ID: " + book.ID);
+            Console.WriteLine("Название: " + book.Name);
+            Console.WriteLine("Автор: " + book.Author);
+            Console.WriteLine("Жанр: " + book.Genre);
+            Console.WriteLine("Год издания: " + book.Izdanie);
+            Console.WriteLine("Цена: " + book.Price + " руб.");
+        }
+        Console.WriteLine("Всего книг: " + list.Count);
+
     }
     static void AddBook()
     {
@@ -130,7 +151,7 @@ using System.Xml.Linq;
         Console.WriteLine("6. Self-Help");
 
         bool genreOK = false;
-        Genre  genre;
+        Genre genre = Genre.Fiction;
         while (!genreOK)
         {
             string input3 = Console.ReadLine();
@@ -173,206 +194,121 @@ using System.Xml.Linq;
             Console.WriteLine("Название не может быть пустым, введите еще раз: ");
             izdanie = Console.ReadLine();
         }
-        decimal price = -1;
+        double price = -1;
         while (price < 0)
         {
             Console.WriteLine("Введите цену: ");
             string input2 = Console.ReadLine();
-            if (!decimal.TryParse(input2, out price) || price < 0)
+            if (!double.TryParse(input2, out price) || price < 0)
             {
                 Console.WriteLine("Неверный ввод, попробуйте еще раз: ");
                 input2 = Console.ReadLine();
                 price = -1;
             }
+
+            AddTestProduct(name.Trim(), author.Trim(), genre, izdanie, price);
+            Console.WriteLine("Книга добавлена!");
         }
-    Product product = new Product();
-    product.ID = 1 + nextID; 
-    nextID++;
-    product.Name = name;
-    product.Author = author;
-    product.Genre = genre;
-    product.Izdanie = izdanie;
-    product.Price = price;
     }
-    static void DeleteBook();
+    static Genre ReadGenre()
     {
-        Console.Write("Введите код книги для удаления: ");
-        string code = Console.ReadLine();
-
-        Product found = FindByCode(code);
-        if (found == null)
+        Console.WriteLine("Выберите жанр:");
+        for (int i = 0; i < genresCount; i++)
         {
-            Console.WriteLine("книга не найден!");
-            return;
+            Console.WriteLine((i + 1) + ". " + (Genre)i);
         }
 
-        products.Remove(found);
-        Console.WriteLine("книга удалён!");
+        while (true)
+        {
+            Console.Write("Номер жанра: ");
+            int number;
+            if (!int.TryParse(Console.ReadLine(), out number))
+            {
+                Console.WriteLine("Ошибка: введите число.");
+            }
+            else if (number < 1 || number > genresCount)
+            {
+                Console.WriteLine("Ошибка: номер от 1 до " + genresCount + ".");
+            }
+            else
+            {
+                return (Genre)(number - 1);
+            }
+        }
     }
-
- 
-    static void SupplyProduct()
+    static void SearchBooks()
     {
-        Console.Write("Введите код книги: ");
-        string code = Console.ReadLine();
+        Console.WriteLine("Искать по:");
+        Console.WriteLine("1. Названию");
+        Console.WriteLine("2. Автору");
+        Console.WriteLine("3. Жанру");
 
-        Product found = FindByCode(code);
-        if (found == null)
+        int choice;
+        while (true)
         {
-            Console.WriteLine("Книга не найдена!");
+            Console.Write("Ваш выбор: ");
+            if (!int.TryParse(Console.ReadLine(), out choice))
+            {
+                Console.WriteLine("Ошибка: введите число.");
+            }
+            else if (choice < 1 || choice > 3)
+            {
+                Console.WriteLine("Ошибка: выберите число от 1 до 3.");
+            }
+            else
+            {
+                break;
+            }
+        }
+        if (choice == 3)
+        {
+            Genre genre = ReadGenre();
+            PrintBooks(books.Where(b => b.Genre == genre).ToList());
+            return;
+        }
+        Console.Write("Введите запрос: ");
+        string text = Console.ReadLine().Trim().ToLower();
+        if (text == "")
+        {
+            Console.WriteLine("Ошибка: запрос не может быть пустым.");
             return;
         }
 
-        int amount = -1;
-        while (amount <= 0)
+        if (choice == 1)
         {
-            Console.Write("Введите количество для поставки: ");
-            string input4 = Console.ReadLine();
-            if (!int.TryParse(input4, out amount) || amount <= 0)
-            {
-                Console.WriteLine("Введите положительное целое число!");
-                amount = -1;
-            }
-        }
-        found.Quantity = found.Quantity + amount;
-        Console.WriteLine("Поставка добавлена! Новое количество: " + found.Quantity);
-    }
-
-    static void SellProduct()
-    {
-        Console.Write("Введите код книги: ");
-        string code = Console.ReadLine();
-
-        Product found = FindByCode(code);
-        if (found == null)
-        {
-            Console.WriteLine("книга не найден!");
-            return;
-        }
-
-        if (!found.InStock())
-        {
-            Console.WriteLine("книги нет на складе!");
-            return;
-        }
-        int amount = -1;
-        while (amount <= 0)
-        {
-            Console.Write("Введите количество для продажи: ");
-            string input = Console.ReadLine();
-            if (!int.TryParse(input, out amount) || amount <= 0)
-            {
-                Console.WriteLine("Введите положительное целое число");
-                amount = -1;
-            }
-        }
-
-        if (amount > found.Quantity)
-        {
-            Console.WriteLine("Недостаточно книги на складе, есть только: " + found.Quantity);
-            return;
-        }
-
-        found.Quantity = found.Quantity - amount;
-        Console.WriteLine("Продано, остаток: " + found.Quantity);
-    }
-
-    static void SearchProduct()
-    {
-        Console.WriteLine("Искать по: 1 - коду, 2 - названию, 3 - категории");
-        string choice = Console.ReadLine();
-
-        bool foundAny = false;
-
-        if (choice == "1")
-        {
-            Console.Write("Введите код: ");
-            string code = Console.ReadLine();
-            Product found = FindByCode(code);
-            if (found != null)
-            {
-                found.Print();
-                foundAny = true;
-            }
-        }
-        else if (choice == "2")
-        {
-            Console.Write("Введите название: ");
-            string name = Console.ReadLine();
-            for (int i = 0; i < products.Count; i++)
-            {
-                if (products[i].Name.ToLower().Contains(name.ToLower()))
-                {
-                    products[i].Print();
-                    Console.WriteLine("------------------");
-                    foundAny = true;
-                }
-            }
-        }
-        else if (choice == "3")
-        {
-            
-            Console.WriteLine("Введите номер категории: ");
-            Console.WriteLine("1. Электроника");
-            Console.WriteLine("2. Продукты");
-            Console.WriteLine("3. Одежда");
-            string catInput = Console.ReadLine();
-            genre genre = genre.Electronics;
-            if (catInput == "1")
-            {
-                genre = genre.Electronics;
-            }
-            else if (catInput == "2")
-            {
-                genre = genre.Groceries;
-            }
-            else if (catInput == "3")
-            {
-                genre = genre.Clothing;
-            }
-            for (int i = 0; i < products.Count; i++)
-            {
-                if (products[i].genre == genre)
-                {
-                    products[i].Print();
-                    Console.WriteLine("------------------");
-                    foundAny = true;
-                }
-            }
+            PrintBooks(books.Where(b => b.Name.ToLower().Contains(text)).ToList());
         }
         else
         {
-            Console.WriteLine("Неверный выбор!");
-            return;
-        }
-
-        if (!foundAny)
-        {
-            Console.WriteLine("книгаы не найдены.");
+            PrintBooks(books.Where(b => b.Author.ToLower().Contains(text)).ToList());
         }
     }
+
+    
+
+   
     static void ShowAll()
     {
-        if (products.Count == 0)
+        if (books.Count == 0)
         {
             Console.WriteLine("Список книгаов пуст.");
             return;
         }
 
-        for (int i = 0; i < products.Count; i++)
+        for (int i = 0; i < books.Count; i++)
         {
-            products[i].Print();
+            books[i].Print();
             Console.WriteLine("------------------");
         }
     }
 
     static Product FindByCode(string code)
     {
-        for (int i = 0; i < products.Count; i++)
+        for (int i = 0; i < books.Count; i++)
         {
-            if (products[i].Code == code)
+            if (books[i].Code == code)
             {
-                return products[i];
+                return books[i];
             }
         }
         return null;
@@ -387,4 +323,19 @@ public void Print()
     Console.WriteLine("Цена: " + Price);
 
 
+}
+static void DeleteBook();
+{
+    Console.Write("Введите код книги для удаления: ");
+    string code = Console.ReadLine();
+
+    Product found = FindByCode(code);
+    if (found == null)
+    {
+        Console.WriteLine("книга не найден!");
+        return;
+    }
+
+    books.Remove(found);
+    Console.WriteLine("книга удалена!");
 }
