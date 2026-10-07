@@ -327,7 +327,7 @@ class Program
         Console.WriteLine("Количество книг по авторам: ");
         foreach (var g in groups)
         {
-            Console.WriteLine(g.Author + " — " + g.Count + " шт");
+            Console.WriteLine(g.Author + " — " + g.Count + "шт");
         }
     }
 }
